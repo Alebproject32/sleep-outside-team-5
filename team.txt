@@ -1,7 +1,6 @@
+Link to Trello:
+https://trello.com/b/kraSmZah/sleep-outside-team-5
 
-echo "Link to Trello:" > team.txt
-echo "https://trello.com/b/kraSmZah/sleep-outside-team-5" >> team.txt
-echo "" >> team.txt
-echo "Team Members:" >> team.txt
-echo "Gary Selios" >> team.txt
-echo "-----" >> team.txt
+Team Members:
+Gary Selios
+Moroni Capcha
