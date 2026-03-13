@@ -43,3 +43,53 @@ export function renderListWithTemplate(
   const htmlStrings = list.map(templateFn);
   parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
 }
+
+// Update the cart counter displayed on the cart icon
+export function updateCartCounter() {
+  // Get current cart from localStorage
+  const cart = getLocalStorage('so-cart') || [];
+  
+  // Calculate total number of items (sum quantities or count products)
+  const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  
+  // Find the cart container element
+  const cartContainer = document.querySelector('.cart');
+  if (!cartContainer) return;
+  
+  // Find or create the counter element
+  let counter = cartContainer.querySelector('.cart-counter');
+  
+  if (totalItems > 0) {
+    if (!counter) {
+      // Create counter if it doesn't exist
+      counter = document.createElement('span');
+      counter.className = 'cart-counter';
+      counter.style.cssText = `
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #b31c1c;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 12px;
+        font-weight: bold;
+        min-width: 18px;
+        text-align: center;
+        line-height: 1.2;
+      `;
+      
+      // Ensure cart link has relative position for absolute positioning
+      const cartLink = cartContainer.querySelector('a');
+      if (cartLink) {
+        cartLink.style.position = 'relative';
+        cartLink.appendChild(counter);
+      }
+    }
+    // Update counter text
+    counter.textContent = totalItems;
+  } else {
+    // Remove counter if cart is empty
+    if (counter) counter.remove();
+  }
+}

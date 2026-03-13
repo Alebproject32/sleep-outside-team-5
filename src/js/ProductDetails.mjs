@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage } from './utils.mjs';
+import { getLocalStorage, setLocalStorage, updateCartCounter } from './utils.mjs';
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -25,11 +25,15 @@ export default class ProductDetails {
     setLocalStorage('so-cart', cart);
     
     console.log('Cart updated:', getLocalStorage('so-cart'));
+    
+    // Update cart counter after adding product
+    updateCartCounter();
   }
 
   renderProductDetails() {
     document.querySelector('#productBrand').innerText = this.product.Brand.Name;
     document.querySelector('#productName').innerText = this.product.NameWithoutBrand;
+    // Usar la ruta original que funcionaba
     document.querySelector('#productImage').src = this.product.Image;
     document.querySelector('#productImage').alt = this.product.Name;
     document.querySelector('#productPrice').innerText = `$${this.product.FinalPrice}`;
