@@ -1,6 +1,6 @@
 import { setLocalStorage, getLocalStorage } from "./utils.mjs";
 
-export default class ProductDetails {
+export default class productDetails {
   constructor(productId, dataSource) {
     this.productId = productId;
     this.product = {};
@@ -13,20 +13,18 @@ export default class ProductDetails {
     //Now I will set the details on the webpage.
     this.renderProductDetails("main");
 
-    //Finally, I will add the button "Add to Cart"
-    document
-      .getElementById("addToCart")
-      .addEventListener("click", this.addToCart.bind(this));
+    //To evaluate the button
+    const button = document.getElementById("addToCart");
+
+    if (button) {
+      button.addEventListener("click", this.addToCart.bind(this));
+      console.log("¡Button found and ready!");
+    }
   }
   renderProductDetails(selector) {
     const element = document.querySelector(selector);
-    if (!this.product || !this.product.Brand) {
-      console.error("Product information is not found it.");
-      return;
-    }
-    element.insertAdjacentHTML(
-      "innerHTML",
-      `<h3>${this.product.Brand.Name}</h3>
+
+    element.innerHTML = `<h3>${this.product.Brand.Name}</h3>
       <h2 class="divider">${this.product.NameWithoutBrand}</h2>
       <img
         class="divider"
@@ -40,13 +38,15 @@ export default class ProductDetails {
       </p>
       <div class="product-detail__add">
         <button id="addToCart" data-id="${this.product.Id}">Add to Cart</button>
-      </div>`,
-    );
+      </div>`;
   }
   addToCart() {
-    const cartContent = getLocalStorage("so-cart") || [];
-    cartContent.push(this.product);
-    setLocalStorage("so-cart", cartContent);
+    let cartItems = getLocalStorage("so-cart");
+    if (!Array.isArray(cartItems)) cartItems = [];
+
+    cartItems.push(this.product);
+    setLocalStorage("so-cart", cartItems);
+
     alert("Product added to cart!");
   }
 }
