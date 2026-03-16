@@ -1,16 +1,9 @@
-//Author: Software Development Alejandro Pérez
-//Instructor Nate this will be my function brain
-//to read Json file and will draw my products.
-//My Individual Activity
-
 import { renderListWithTemplate } from "./utils.mjs";
 
 function productCardTemplate(product) {
-  const imageUrl = product.Image.replace(/^\.\.\//, "");
-
   return `<li class="product-card">
     <a href="/product_pages/index.html?product=${product.Id}">
-      <img src="${imageUrl}" alt="Image of ${product.Name}">
+      <img src="${product.Image}" alt="Image of ${product.Name}">
       <h3 class="card__brand">${product.Brand.Name}</h3>
       <h2 class="card__name">${product.NameWithoutBrand}</h2>
       <p class="product-card__price">$${product.FinalPrice}</p>
