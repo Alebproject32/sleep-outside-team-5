@@ -1,5 +1,5 @@
 import ProductData from "./ProductData.mjs";
-import ProductList from "./productList.mjs";
+import ProductList from "./ProductList.mjs";
 import { updateCartCounter } from "./utils.mjs";
 
 function init() {

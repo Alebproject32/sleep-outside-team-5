@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage, updateCartCounter } from './utils.mjs';
+import { getLocalStorage, setLocalStorage, updateCartCounter } from "./utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -16,15 +16,11 @@ export default class ProductDetails {
   }
 
   addToCart() {
-    console.log('Adding product:', this.product);
-    
-    let cartContents = getLocalStorage('so-cart');
+    let cartContents = getLocalStorage("so-cart");
     let cart = Array.isArray(cartContents) ? cartContents : [];
     
     cart.push(this.product);
-    setLocalStorage('so-cart', cart);
-    
-    console.log('Cart updated:', getLocalStorage('so-cart'));
+    setLocalStorage("so-cart", cart);
     
     // Update cart counter after adding product
     updateCartCounter();
