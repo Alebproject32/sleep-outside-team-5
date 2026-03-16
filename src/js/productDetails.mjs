@@ -11,8 +11,8 @@ export default class ProductDetails {
     this.product = await this.dataSource.findProductById(this.productId);
     this.renderProductDetails();
     
-    document.getElementById('addToCart')
-      .addEventListener('click', this.addToCart.bind(this));
+    document.getElementById("addToCart")
+      .addEventListener("click", this.addToCart.bind(this));
   }
 
   addToCart() {
@@ -27,12 +27,12 @@ export default class ProductDetails {
   }
 
   renderProductDetails() {
-    document.querySelector('#productBrand').innerText = this.product.Brand.Name;
-    document.querySelector('#productName').innerText = this.product.NameWithoutBrand;
-    document.querySelector('#productImage').src = this.product.Image;
-    document.querySelector('#productImage').alt = this.product.Name;
-    document.querySelector('#productPrice').innerText = `$${this.product.FinalPrice}`;
-    document.querySelector('#productDescription').innerHTML = this.product.DescriptionHtmlSimple;
-    document.querySelector('#addToCart').dataset.id = this.product.Id;
+    document.querySelector("#productBrand").innerText = this.product.Brand.Name;
+    document.querySelector("#productName").innerText = this.product.NameWithoutBrand;
+    document.querySelector("#productImage").src = this.product.Image;
+    document.querySelector("#productImage").alt = this.product.Name;
+    document.querySelector("#productPrice").innerText = `$${this.product.FinalPrice}`;
+    document.querySelector("#productDescription").innerHTML = this.product.DescriptionHtmlSimple;
+    document.querySelector("#addToCart").dataset.id = this.product.Id;
   }
 }

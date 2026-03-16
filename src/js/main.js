@@ -1,5 +1,5 @@
 import ProductData from "./ProductData.mjs";
-import ProductList from "./ProductList.mjs";
+import ProductList from "./productList.mjs";
 import { updateCartCounter } from "./utils.mjs";
 
 function init() {
@@ -7,7 +7,6 @@ function init() {
   const listElement = document.querySelector(".product-list");
 
   if (!listElement) {
-    console.error("It´s not found .product-list in DOM");
     return;
   }
 
