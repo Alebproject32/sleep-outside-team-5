@@ -1,8 +1,12 @@
 import ProductData from "./ProductData.mjs";
 import ProductList from "./productList.mjs";
-import { updateCartCounter } from "./utils.mjs";
+import { updateCartCounter, loadHeaderFooter } from "./utils.mjs";
 
-function init() {
+async function init() {
+  // Load header and footer dynamically
+  await loadHeaderFooter();
+
+  // Initialize product list
   const dataSource = new ProductData("tents");
   const listElement = document.querySelector(".product-list");
 
