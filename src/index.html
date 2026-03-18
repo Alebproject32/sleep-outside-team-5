@@ -6,14 +6,15 @@
     <title>Sleep Outside | Home</title>
     <link rel="stylesheet" href="/css/style.css" />
   </head>
- <header class="divider" id="main-header"></header>
   <body>
-    
+    <!-- Dynamic header loaded with JavaScript -->
+    <header class="divider" id="main-header"></header>
+
     <main class="divider">
       <div class="hero">
         <img
           src="/images/banner-sm.jpg"
-          srcset="images/banner-sm.jpg 500w, images/banner.jpg"
+          srcset="/images/banner-sm.jpg 500w, /images/banner.jpg"
           alt="image of a high mountain lake"
         />
         <div class="logo logo--square">
@@ -28,18 +29,31 @@
         </div>
       </div>
 
-      <section class="products">
-        <h2>Top Products</h2>
-        <ul class="product-list">
-          <li class="product-card">
-            <!-- Old product_pages -->
-            <!-- <a href="product_pages/marmot-ajax-3.html"></a> -->
-            <a href="/product_pages/index.html?product=${product.Id}"> </a>
-          </li>
-        </ul>
+      <!-- Product Categories Section -->
+      <section class="categories">
+        <h2>Shop by Category</h2>
+        <div class="category-grid">
+          <a href="/product_listing/?category=tents" class="category-card">
+            <img src="/images/categories/category-tents.svg" alt="Tents" />
+            <h3>Tents</h3>
+          </a>
+          <a href="/product_listing/?category=backpacks" class="category-card">
+            <img src="/images/categories/category-backpacks.svg" alt="Backpacks" />
+            <h3>Backpacks</h3>
+          </a>
+          <a href="/product_listing/?category=sleeping-bags" class="category-card">
+            <img src="/images/categories/category-sleepingbags.svg" alt="Sleeping Bags" />
+            <h3>Sleeping Bags</h3>
+          </a>
+          <a href="/product_listing/?category=hammocks" class="category-card">
+            <img src="/images/categories/category-hammocks.svg" alt="Hammocks" />
+            <h3>Hammocks</h3>
+          </a>
+        </div>
       </section>
     </main>
-<footer id="main-footer"></footer>
+
+    <footer id="main-footer"></footer>
     <script src="/js/main.js" type="module"></script>
   </body>
 </html>

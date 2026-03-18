@@ -17,13 +17,19 @@ function renderCartContents() {
 }
 
 function cartItemTemplate(item) {
-  // Get color name safely (in case Colors array doesn't exist)
-  const colorName = item.Colors && item.Colors[0] ? item.Colors[0].ColorName : '';
+  // ✅ Use PrimaryMedium from Images object
+  const imageUrl = item.Images?.PrimaryMedium || '/images/placeholder.jpg';
   
-  const newItem = `<li class="cart-card divider">
+  // ✅ Get color name (Colors is an object, not an array)
+  const colorName = item.Colors?.ColorName || '';
+  
+  // ✅ Use SuggestedRetailPrice instead of FinalPrice
+  const price = item.SuggestedRetailPrice || 0;
+
+  return `<li class="cart-card divider">
   <a href="#" class="cart-card__image">
     <img
-      src="${item.Image}"
+      src="${imageUrl}"
       alt="${item.Name}"
     />
   </a>
@@ -32,10 +38,8 @@ function cartItemTemplate(item) {
   </a>
   <p class="cart-card__color">${colorName}</p>
   <p class="cart-card__quantity">qty: 1</p>
-  <p class="cart-card__price">$${item.FinalPrice}</p>
+  <p class="cart-card__price">$${price}</p>
 </li>`;
-
-  return newItem;
 }
 
 // Initialize the cart
