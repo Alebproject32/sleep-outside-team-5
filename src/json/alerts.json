@@ -1,0 +1,17 @@
+[
+  {
+    "message": "Free shipping on orders over $50!",
+    "background": "darkblue",
+    "color": "white"
+  },
+  {
+    "message": "New products added to Backpacks category",
+    "background": "green",
+    "color": "white"
+  },
+  {
+    "message": "Flash sale: 20% off all tents",
+    "background": "darkred",
+    "color": "yellow"
+  }
+]

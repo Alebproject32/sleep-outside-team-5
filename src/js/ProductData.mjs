@@ -2,24 +2,56 @@ function convertToJson(res) {
   if (res.ok) {
     return res.json();
   } else {
-    throw new Error("Bad Response");
+    throw new Error(`Bad Response: ${res.status} ${res.statusText}`);
   }
 }
 
-export default class ProductData {
-  constructor(category) {
-    this.category = category;
-    this.path = `/json/${this.category}.json`;
-  }
+// Hardcoded URL (temporal, until .env works)
+const baseURL = 'https://wdd330-backend.onrender.com/';
+console.log('🚀 baseURL (hardcodeada):', baseURL);
 
-  getData() {
-    return fetch(this.path)
-      .then(convertToJson)
-      .then((data) => data);
+export default class ProductData {
+  constructor() {}
+
+  async getData(category) {
+    console.log('📦 getData llamada con categoría:', category);
+    const url = `${baseURL}products/search/${category}`;
+    console.log('🌐 URL generada:', url);
+    
+    try {
+      const response = await fetch(url);
+      console.log('📡 Status:', response.status);
+      
+      const data = await convertToJson(response);
+      console.log('📦 Data recibida:', data);
+      
+      return data.Result;
+    } catch (error) {
+      console.error('❌ Error en getData:', error.message);
+      throw error;
+    }
   }
 
   async findProductById(id) {
-    const products = await this.getData();
-    return products.find((item) => item.Id === id);
+    console.log('🔍 Buscando producto con ID:', id);
+    const url = `${baseURL}product/${id}`;
+    console.log('🌐 URL generada:', url);
+    
+    try {
+      const response = await fetch(url);
+      console.log('📡 Status:', response.status);
+      console.log('📡 Content-Type:', response.headers.get('content-type'));
+      
+      // ✅ Leer directamente como JSON (más limpio)
+      const data = await convertToJson(response);
+      console.log('✅ JSON parseado correctamente:', data);
+      
+      // ✅ Devolvemos data.Result (el producto real)
+      return data.Result;
+      
+    } catch (error) {
+      console.error('❌ Error en findProductById:', error.message);
+      throw error;
+    }
   }
 }

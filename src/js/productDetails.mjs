@@ -9,6 +9,7 @@ export default class ProductDetails {
 
   async init() {
     this.product = await this.dataSource.findProductById(this.productId);
+    console.log('✅ Producto cargado:', this.product);
     this.renderProductDetails();
     
     document.getElementById("addToCart")
@@ -27,12 +28,40 @@ export default class ProductDetails {
   }
 
   renderProductDetails() {
-    document.querySelector("#productBrand").innerText = this.product.Brand.Name;
-    document.querySelector("#productName").innerText = this.product.NameWithoutBrand;
-    document.querySelector("#productImage").src = this.product.Image;
-    document.querySelector("#productImage").alt = this.product.Name;
-    document.querySelector("#productPrice").innerText = `$${this.product.FinalPrice}`;
-    document.querySelector("#productDescription").innerHTML = this.product.DescriptionHtmlSimple;
-    document.querySelector("#addToCart").dataset.id = this.product.Id;
+    // ✅ Images is an object, not an array
+    const imageUrl = this.product.Images?.PrimaryLarge || '/images/placeholder.jpg';
+    
+    // Brand (API returns only ID)
+    const brandName = this.product.Brand || 'Unknown';
+    
+    // Product name
+    const productName = this.product.NameWithoutBrand || this.product.Name || 'Product';
+    
+    // Price
+    const price = this.product.SuggestedRetailPrice || 0;
+    
+    // Description (nested inside Colors)
+    let description = 'No description available';
+    if (this.product.Colors) {
+      description = this.product.Colors.DescriptionHtmlSimple || description;
+    }
+
+    // Assign values to DOM elements
+    const brandEl = document.querySelector("#productBrand");
+    const nameEl = document.querySelector("#productName");
+    const imgEl = document.querySelector("#productImage");
+    const priceEl = document.querySelector("#productPrice");
+    const descEl = document.querySelector("#productDescription");
+    const btnEl = document.querySelector("#addToCart");
+
+    if (brandEl) brandEl.innerText = brandName;
+    if (nameEl) nameEl.innerText = productName;
+    if (imgEl) {
+      imgEl.src = imageUrl;
+      imgEl.alt = productName;
+    }
+    if (priceEl) priceEl.innerText = `$${price}`;
+    if (descEl) descEl.innerHTML = description;
+    if (btnEl) btnEl.dataset.id = this.product.Id;
   }
 }
