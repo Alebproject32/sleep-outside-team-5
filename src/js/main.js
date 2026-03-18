@@ -1,5 +1,5 @@
 import { loadHeaderFooter, updateCartCounter } from "./utils.mjs";
-import Alert from "./Alert.js";
+import Alert from "./alert.js";
 
 async function init() {
   // Load header and footer dynamically
