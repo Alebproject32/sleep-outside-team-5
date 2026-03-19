@@ -1,13 +1,22 @@
 import { getLocalStorage, loadHeaderFooter } from "./utils.mjs";
 
-// Load header and footer
-loadHeaderFooter();
+async function init() {
+  try {
+    // Load header and footer
+    await loadHeaderFooter();
 
+    displayCheckoutSummary();
+  } catch (error) {
+    console.error("Error trying initialize checkout:", error);
+  }
+}
 // Function to display checkout summary
 function displayCheckoutSummary() {
   const cartItems = getLocalStorage("so-cart") || [];
   const checkoutContent = document.querySelector("#checkout-content");
   
+  if (!checkoutContent) return;
+
   if (cartItems.length === 0) {
     checkoutContent.innerHTML = "<p>Your cart is empty. <a href='/index.html'>Go shopping</a></p>";
     return;
@@ -17,6 +26,7 @@ function displayCheckoutSummary() {
   let itemsHtml = "<h3>Order Summary</h3><ul>";
   
   cartItems.forEach(item => {
+    const price = item.FinalPrice || item.ListPrice || 0;
     total += item.FinalPrice;
     itemsHtml += `<li>${item.Name} - $${item.FinalPrice}</li>`;
   });
@@ -83,9 +93,9 @@ function handleCheckout(event) {
 }
 
 // Initialize checkout page
-function init() {
-  displayCheckoutSummary();
-}
+//function init() {
+ // displayCheckoutSummary();
+//}
 
 // Run initialization when DOM is ready
 if (document.readyState === "loading") {
