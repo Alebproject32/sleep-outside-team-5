@@ -94,9 +94,7 @@ export function updateCartCounter() {
   }
 }
 
-
 // NEW FUNCTIONS FOR DYNAMIC HEADER/FOOTER
-
 
 /**
  * Renders a single template into a parent element
@@ -105,6 +103,8 @@ export function updateCartCounter() {
  * @param {any} data - Optional data to pass to callback
  * @param {function} callback - Optional function to call after rendering
  */
+
+//I checked out this function (All is right)
 export function renderWithTemplate(template, parentElement, data, callback) {
   parentElement.innerHTML = template;
   if (callback) {
@@ -119,8 +119,11 @@ export function renderWithTemplate(template, parentElement, data, callback) {
  */
 export async function loadTemplate(path) {
   const res = await fetch(path);
-  const template = await res.text();
-  return template;
+  if (res.ok) {
+    // This is my contribution to verify if it's right answer
+    const template = await res.text();
+    return template;
+  }
 }
 
 /**
@@ -128,24 +131,23 @@ export async function loadTemplate(path) {
  */
 export async function loadHeaderFooter() {
   // Load header template
-  const headerTemplate = await loadTemplate('/partials/header.html');
+  const headerTemplate = await loadTemplate("/public/partials/header.html");
   // Load footer template
-  const footerTemplate = await loadTemplate('/partials/footer.html');
+  const footerTemplate = await loadTemplate("/public/partials/footer.html");
 
   // Get header and footer elements from DOM
-  const headerElement = document.querySelector('#main-header');
-  const footerElement = document.querySelector('#main-footer');
+  const headerElement = document.querySelector("#main-header");
+  const footerElement = document.querySelector("#main-footer");
+
+  //const headerElement = document.getElementById("main-header");
+  //const footerElement = document.getElementById("main-footer");
 
   // Render header and footer
   if (headerElement) {
-    renderWithTemplate(headerTemplate, headerElement);
+    renderWithTemplate(headerTemplate, headerElement, null, updateCartCounter);
   }
-  
+
   if (footerElement) {
     renderWithTemplate(footerTemplate, footerElement);
   }
 }
-
-
-
-

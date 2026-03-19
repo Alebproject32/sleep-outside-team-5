@@ -1,10 +1,19 @@
 import { getLocalStorage, loadHeaderFooter } from "./utils.mjs";
 
-// Load header and footer dynamically
-loadHeaderFooter();
+async function init() {
+
+  // Load header and footer dynamically
+  await loadHeaderFooter();
+
+  //Update the cart
+  renderCartContents();
+}
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
+
+  const productList = document.querySelector(".product-list");
+  if (!productList) return; //security path if element doesn't exist
   
   // Check if cart exists and has items
   if (!cartItems || cartItems.length === 0) {
@@ -18,10 +27,10 @@ function renderCartContents() {
 
 function cartItemTemplate(item) {
   // ✅ Use PrimaryMedium from Images object
-  const imageUrl = item.Images?.PrimaryMedium || '/images/placeholder.jpg';
+  const imageUrl = item.Images?.PrimaryMedium || "/images/placeholder.jpg";
   
   // ✅ Get color name (Colors is an object, not an array)
-  const colorName = item.Colors?.ColorName || '';
+  const colorName = item.Colors?.ColorName || "";
   
   // ✅ Use SuggestedRetailPrice instead of FinalPrice
   const price = item.SuggestedRetailPrice || 0;
@@ -43,4 +52,5 @@ function cartItemTemplate(item) {
 }
 
 // Initialize the cart
-renderCartContents();
+//renderCartContents();
+init();

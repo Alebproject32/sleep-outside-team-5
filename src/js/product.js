@@ -2,11 +2,16 @@ import { getParam, loadHeaderFooter } from "./utils.mjs";
 import ProductData from "./ProductData.mjs";
 import ProductDetails from "./productDetails.mjs";
 
-// Load header and footer dynamically
-loadHeaderFooter();
+async function init() {
 
-const productId = getParam("product");
-const dataSource = new ProductData("tents");
+    // Load header and footer dynamically
+    await loadHeaderFooter();
 
-const product = new ProductDetails(productId, dataSource);
-product.init();
+    const productId = getParam("product");
+    const dataSource = new ProductData("tents");
+
+    const product = new ProductDetails(productId, dataSource);
+    product.init();
+}
+
+init();
