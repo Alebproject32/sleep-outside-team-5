@@ -7,23 +7,27 @@ async function init() {
   await loadHeaderFooter();
 
   // Get category from URL parameter (default to 'tents')
-  const category = getParam('category') || 'tents';
+  const category = getParam("category") || "tents";
 
   // Update page title
-  const titleElement = document.querySelector('#category-title');
+  const titleElement = document.querySelector("#category-title");
   if (titleElement) {
-    titleElement.textContent = `Top Products: ${category}`;
+    titleElement.innerHTML = `Top Products: ${category} <span id="product-count"></span>`;
   }
 
   // Initialize product list
-  const dataSource = new ProductData();  // ← Ya no pasamos categoría aquí
+  const dataSource = new ProductData(); // ← Ya no pasamos categoría aquí
   const listElement = document.querySelector(".product-list");
 
   if (!listElement) {
     return;
   }
 
-  const productListInstance = new ProductList(category, dataSource, listElement);
+  const productListInstance = new ProductList(
+    category,
+    dataSource,
+    listElement,
+  );
   productListInstance.init();
 }
 
