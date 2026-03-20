@@ -4,7 +4,7 @@ import { loadHeaderFooter, getParam } from "./utils.mjs";
 
 async function init() {
   // Load header and footer dynamically
-  await loadHeaderFooter("./partials/header.html", "./partials/footer.html");
+  await loadHeaderFooter("/partials/header.html", "/partials/footer.html");
 
   // Get category from URL parameter (default to 'tents')
   const category = getParam("category") || "tents";
