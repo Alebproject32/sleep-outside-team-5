@@ -1,52 +1,67 @@
-import { setLocalStorage, getLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, updateCartCounter } from "./utils.mjs";
 
-export default class productDetails {
+export default class ProductDetails {
   constructor(productId, dataSource) {
     this.productId = productId;
     this.product = {};
     this.dataSource = dataSource;
   }
+
   async init() {
-    // Here I will looking my datasource to find details about the products using ID
     this.product = await this.dataSource.findProductById(this.productId);
-
-    //Now I will set the details on the webpage.
-    this.renderProductDetails("main");
-
-    //To evaluate the button
-    const button = document.getElementById("addToCart");
-
-    if (button) {
-      button.addEventListener("click", this.addToCart.bind(this));
-      console.log("¡Button found and ready!");
-    }
+    console.log('✅ Producto cargado:', this.product);
+    this.renderProductDetails();
+    
+    document.getElementById("addToCart")
+      .addEventListener("click", this.addToCart.bind(this));
   }
-  renderProductDetails(selector) {
-    const element = document.querySelector(selector);
 
-    element.innerHTML = `<h3>${this.product.Brand.Name}</h3>
-      <h2 class="divider">${this.product.NameWithoutBrand}</h2>
-      <img
-        class="divider"
-        src="${this.product.Image}"
-        alt="${this.product.NameWithoutBrand}"
-      />
-      <p class="product-card__price">$${this.product.FinalPrice}</p>
-      <p class="product__color">${this.product.Colors[0].ColorName}</p>
-      <p class="product__description">
-        ${this.product.DescriptionHtmlSimple}
-      </p>
-      <div class="product-detail__add">
-        <button id="addToCart" data-id="${this.product.Id}">Add to Cart</button>
-      </div>`;
-  }
   addToCart() {
-    let cartItems = getLocalStorage("so-cart");
-    if (!Array.isArray(cartItems)) cartItems = [];
+    let cartContents = getLocalStorage("so-cart");
+    let cart = Array.isArray(cartContents) ? cartContents : [];
+    
+    cart.push(this.product);
+    setLocalStorage("so-cart", cart);
+    
+    // Update cart counter after adding product
+    updateCartCounter();
+  }
 
-    cartItems.push(this.product);
-    setLocalStorage("so-cart", cartItems);
+  renderProductDetails() {
+    // ✅ Images is an object, not an array
+    const imageUrl = this.product.Images?.PrimaryLarge || '/images/placeholder.jpg';
+    
+    // Brand (API returns only ID)
+    const brandName = this.product.Brand || 'Unknown';
+    
+    // Product name
+    const productName = this.product.NameWithoutBrand || this.product.Name || 'Product';
+    
+    // Price
+    const price = this.product.SuggestedRetailPrice || 0;
+    
+    // Description (nested inside Colors)
+    let description = 'No description available';
+    if (this.product.Colors) {
+      description = this.product.Colors.DescriptionHtmlSimple || description;
+    }
 
-    alert("Product added to cart!");
+    // Assign values to DOM elements
+    const brandEl = document.querySelector("#productBrand");
+    const nameEl = document.querySelector("#productName");
+    const imgEl = document.querySelector("#productImage");
+    const priceEl = document.querySelector("#productPrice");
+    const descEl = document.querySelector("#productDescription");
+    const btnEl = document.querySelector("#addToCart");
+
+    if (brandEl) brandEl.innerText = brandName;
+    if (nameEl) nameEl.innerText = productName;
+    if (imgEl) {
+      imgEl.src = imageUrl;
+      imgEl.alt = productName;
+    }
+    if (priceEl) priceEl.innerText = `$${price}`;
+    if (descEl) descEl.innerHTML = description;
+    if (btnEl) btnEl.dataset.id = this.product.Id;
   }
 }

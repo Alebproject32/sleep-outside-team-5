@@ -93,3 +93,61 @@ export function updateCartCounter() {
     if (counter) counter.remove();
   }
 }
+
+// NEW FUNCTIONS FOR DYNAMIC HEADER/FOOTER
+
+/**
+ * Renders a single template into a parent element
+ * @param {string} template - HTML string to insert
+ * @param {HTMLElement} parentElement - Where to insert the template
+ * @param {any} data - Optional data to pass to callback
+ * @param {function} callback - Optional function to call after rendering
+ */
+
+//I checked out this function (All is right)
+export function renderWithTemplate(template, parentElement, data, callback) {
+  parentElement.innerHTML = template;
+  if (callback) {
+    callback(data);
+  }
+}
+
+/**
+ * Loads an HTML template from a file
+ * @param {string} path - Path to the HTML file
+ * @returns {Promise<string>} - The HTML content as a string
+ */
+export async function loadTemplate(path) {
+  const res = await fetch(path);
+  if (res.ok) {
+    // This is my contribution to verify if it's right answer
+    const template = await res.text();
+    return template;
+  }
+}
+
+/**
+ * Loads and renders the header and footer templates
+ */
+export async function loadHeaderFooter() {
+  // Load header template
+  const headerTemplate = await loadTemplate("/public/partials/header.html");
+  // Load footer template
+  const footerTemplate = await loadTemplate("/public/partials/footer.html");
+
+  // Get header and footer elements from DOM
+  const headerElement = document.querySelector("#main-header");
+  const footerElement = document.querySelector("#main-footer");
+
+  //const headerElement = document.getElementById("main-header");
+  //const footerElement = document.getElementById("main-footer");
+
+  // Render header and footer
+  if (headerElement) {
+    renderWithTemplate(headerTemplate, headerElement, null, updateCartCounter);
+  }
+
+  if (footerElement) {
+    renderWithTemplate(footerTemplate, footerElement);
+  }
+}
