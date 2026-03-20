@@ -300,12 +300,12 @@ footer {
     max-width: 800px;
     margin: 0 auto;
   }
-  
+
   .category-card img {
     width: 80px;
     height: 80px;
   }
-  
+
   .category-card h3 {
     font-size: 1.2rem;
   }
@@ -322,9 +322,16 @@ footer {
   padding: 12px;
   text-align: center;
   font-weight: 600;
-  border-bottom: 1px solid rgba(255,255,255,0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .alert-list p:last-child {
   border-bottom: none;
+}
+
+#product-count {
+  font-size: 0.8em;
+  color: #666;
+  margin-left: 10px;
+  font-weight: normal;
 }
