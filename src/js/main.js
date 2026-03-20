@@ -4,7 +4,7 @@ import Alert from "./alert.js";
 async function init() {
   try {
     // Load header and footer dynamically
-    await loadHeaderFooter("/partials/header.html", "/partials/footer.html");
+    await loadHeaderFooter("./partials/header.html", "./partials/footer.html");
 
     // Load and display alerts
     const alert = new Alert();
