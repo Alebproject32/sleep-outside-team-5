@@ -1,4 +1,4 @@
-import ProductData from "./ProductData.mjs";
+import ExternalServices from "./ExternalServices.mjs";
 import ProductList from "./productList.mjs";
 import { loadHeaderFooter, getParam } from "./utils.mjs";
 
@@ -16,7 +16,7 @@ async function init() {
   }
 
   // Initialize product list
-  const dataSource = new ProductData();  // ← Ya no pasamos categoría aquí
+  const dataSource = new ExternalServices();  // ← Updated from ProductData
   const listElement = document.querySelector(".product-list");
 
   if (!listElement) {
