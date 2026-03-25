@@ -1,14 +1,25 @@
-import { getLocalStorage, loadHeaderFooter } from "./utils.mjs";
+import { getLocalStorage, loadHeaderFooter, updateCartCounter } from "./utils.mjs";
 
-// Load header and footer dynamically
-loadHeaderFooter();
+async function init() {
+  // Load header and footer dynamically (espera a que termine)
+  await loadHeaderFooter();
+  
+  // Update cart counter after header is loaded
+  updateCartCounter();
+  
+  // Render cart contents
+  renderCartContents();
+}
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
   
   // Check if cart exists and has items
   if (!cartItems || cartItems.length === 0) {
-    document.querySelector(".product-list").innerHTML = "<p>Your cart is empty</p>";
+    const productList = document.querySelector(".product-list");
+    if (productList) {
+      productList.innerHTML = "<p>Your cart is empty</p>";
+    }
     // Hide cart footer when cart is empty
     const cartFooter = document.querySelector(".cart-footer");
     if (cartFooter) cartFooter.style.display = "none";
@@ -16,7 +27,10 @@ function renderCartContents() {
   }
   
   const htmlItems = cartItems.map((item) => cartItemTemplate(item));
-  document.querySelector(".product-list").innerHTML = htmlItems.join("");
+  const productList = document.querySelector(".product-list");
+  if (productList) {
+    productList.innerHTML = htmlItems.join("");
+  }
   
   // Calculate and display cart total
   updateCartTotal(cartItems);
@@ -59,4 +73,4 @@ function updateCartTotal(cartItems) {
 }
 
 // Initialize the cart
-renderCartContents();
+init();

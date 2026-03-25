@@ -12,6 +12,9 @@ export default class ProductDetails {
     console.log('✅ Producto cargado:', this.product);
     this.renderProductDetails();
     
+    // Update cart counter when page loads (para mostrar items existentes)
+    updateCartCounter();
+    
     document.getElementById("addToCart")
       .addEventListener("click", this.addToCart.bind(this));
   }

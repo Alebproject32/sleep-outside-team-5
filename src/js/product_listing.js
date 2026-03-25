@@ -1,10 +1,13 @@
 import ExternalServices from "./ExternalServices.mjs";
 import ProductList from "./productList.mjs";
-import { loadHeaderFooter, getParam } from "./utils.mjs";
+import { loadHeaderFooter, getParam, updateCartCounter } from "./utils.mjs";
 
 async function init() {
   // Load header and footer dynamically
   await loadHeaderFooter();
+
+  // Update cart counter when page loads
+  updateCartCounter();
 
   // Get category from URL parameter (default to 'tents')
   const category = getParam('category') || 'tents';
@@ -16,7 +19,7 @@ async function init() {
   }
 
   // Initialize product list
-  const dataSource = new ExternalServices();  // ← Updated from ProductData
+  const dataSource = new ExternalServices();
   const listElement = document.querySelector(".product-list");
 
   if (!listElement) {

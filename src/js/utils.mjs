@@ -51,6 +51,16 @@ export function updateCartCounter() {
   const cartContainer = document.querySelector(".cart");
   if (!cartContainer) return;
 
+  // Animate the SVG inside the cart
+  const cartSvg = cartContainer.querySelector("svg");
+  if (cartSvg) {
+    cartSvg.classList.add("cart-icon-animate");
+    setTimeout(() => {
+      cartSvg.classList.remove("cart-icon-animate");
+    }, 300);
+  }
+
+  // Update or create counter
   let counter = cartContainer.querySelector(".cart-counter");
 
   if (totalItems > 0) {
