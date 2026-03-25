@@ -1,4 +1,4 @@
-import { getLocalStorage, loadHeaderFooter } from "./utils.mjs";
+import { getLocalStorage, loadHeaderFooter, alertMessage } from "./utils.mjs";
 import CheckoutProcess from "./CheckoutProcess.mjs";
 import ExternalServices from "./ExternalServices.mjs";
 
@@ -31,19 +31,14 @@ function renderCheckout() {
           <legend>Customer Information</legend>
           <label for="fname">First Name:</label>
           <input type="text" id="fname" name="fname" required>
-          
           <label for="lname">Last Name:</label>
           <input type="text" id="lname" name="lname" required>
-          
           <label for="street">Street Address:</label>
           <input type="text" id="street" name="street" required>
-          
           <label for="city">City:</label>
           <input type="text" id="city" name="city" required>
-          
           <label for="state">State:</label>
           <input type="text" id="state" name="state" required>
-          
           <label for="zip">Zip Code:</label>
           <input type="text" id="zip" name="zip" required>
         </fieldset>
@@ -52,10 +47,8 @@ function renderCheckout() {
           <legend>Payment Information</legend>
           <label for="cardNumber">Credit Card Number:</label>
           <input type="text" id="cardNumber" name="cardNumber" required>
-          
           <label for="expiration">Expiration Date (MM/YY):</label>
           <input type="text" id="expiration" name="expiration" placeholder="MM/YY" required>
-          
           <label for="code">Security Code:</label>
           <input type="text" id="code" name="code" required>
         </fieldset>
@@ -81,25 +74,45 @@ function renderCheckout() {
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       
+      // Validate form using built-in HTML validation
+      const isValid = form.checkValidity();
+      form.reportValidity();
+      
+      if (!isValid) {
+        return;
+      }
+      
       const formData = new FormData(form);
       const formValues = Object.fromEntries(formData.entries());
       
       const checkoutForOrder = new CheckoutProcess("so-cart", ".order-summary");
       checkoutForOrder.init();
       checkoutForOrder.calculateOrderTotal();
-      
       const order = await checkoutForOrder.checkout(formValues);
       
       try {
         const externalServices = new ExternalServices();
         await externalServices.checkout(order);
-        alert("Order placed successfully!");
-        // Optionally clear cart and redirect
-        // localStorage.removeItem("so-cart");
-        // window.location.href = "/";
+        
+        // Success: clear cart and redirect to success page
+        localStorage.removeItem("so-cart");
+        window.location.href = "/checkout/success.html";
+        
       } catch (error) {
-        console.error("Checkout failed:", error);
-        alert("There was a problem processing your order. Please try again.");
+        let errorMessage = "There was a problem processing your order. Please try again.";
+        
+        // Extract server error message
+        if (error.name === 'servicesError' && error.message) {
+          if (error.message.cardNumber) {
+            errorMessage = error.message.cardNumber;
+          } else if (error.message.message) {
+            errorMessage = error.message.message;
+          } else if (typeof error.message === 'string') {
+            errorMessage = error.message;
+          }
+        }
+        
+        alertMessage(errorMessage);
       }
     });
   }
