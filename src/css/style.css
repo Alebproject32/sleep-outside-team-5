@@ -335,3 +335,105 @@ footer {
   margin-left: 10px;
   font-weight: normal;
 }
+
+#checkout-form {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Inter", sans-serif;
+}
+
+#checkout-form fieldset {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Crea dos columnas */
+  gap: 15px;
+  background-color: #f9f9f9;
+}
+
+#checkout-form legend {
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 0 10px;
+  color: #333;
+}
+
+#checkout-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+#checkout-form label:has(input[name="street"]),
+#checkout-form #order-summary {
+  grid-column: span 2;
+}
+
+#checkout-form input {
+  padding: 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+#checkout-form input:focus {
+  border-color: #ff8a00; /* Color naranja de la marca */
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 138, 0, 0.2);
+}
+
+#order-summary {
+  background-color: #fff;
+  border-top: 2px solid #ff8a00 !important;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 20px;
+}
+
+#order-summary p {
+  margin: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #eee;
+  padding-bottom: 5px;
+  grid-column: span 2;
+}
+
+#order-summary p.order-total-container {
+    border-bottom: none;
+    margin-top: 15px;
+    font-size: 1.2rem;
+    
+}
+
+#order-summary strong {
+  font-size: 1.3rem;
+  color: #000;
+  margin-top: 10px;
+}
+
+#checkoutSubmit {
+  width: 100%;
+  padding: 15px;
+  background-color: #525b0f;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 20px;
+}
+
+#checkoutSubmit:hover {
+    background-color: #ff8a00;
+}
