@@ -15,9 +15,11 @@ export default class ProductDetails {
     this.product = await this.dataSource.findProductById(this.productId);
     console.log("✅ Load Product:", this.product);
     this.renderProductDetails();
-
-    document
-      .getElementById("addToCart")
+    
+    // Update cart counter when page loads (para mostrar items existentes)
+    updateCartCounter();
+    
+    document.getElementById("addToCart")
       .addEventListener("click", this.addToCart.bind(this));
   }
 
