@@ -1,101 +1,81 @@
-import { getLocalStorage, loadHeaderFooter, alertMessage } from "./utils.mjs";
+import { getLocalStorage, loadHeaderFooter, alertMessage, updateCartCounter } from "/js/utils.mjs";
 import CheckoutProcess from "./CheckoutProcess.mjs";
 import ExternalServices from "./ExternalServices.mjs";
 
-// Load header and footer
-loadHeaderFooter();
+async function init() {
+  // Load header and footer dynamically
+  await loadHeaderFooter();
+  
+  // Update cart counter
+  updateCartCounter();
 
-function renderCheckout() {
-  const checkoutContent = document.querySelector("#checkout-content");
+  // Get cart items
   const cartItems = getLocalStorage("so-cart") || [];
   
+  // Check if cart is empty
   if (cartItems.length === 0) {
-    checkoutContent.innerHTML = "<p>Your cart is empty. <a href='/index.html'>Go shopping</a></p>";
+    const orderSummary = document.querySelector("#order-summary");
+    if (orderSummary) {
+      orderSummary.innerHTML = "<p>Your cart is empty. <a href='/index.html'>Go shopping</a></p>";
+    }
+    const submitButton = document.querySelector("#checkoutSubmit");
+    if (submitButton) submitButton.style.display = "none";
     return;
   }
-  
-  checkoutContent.innerHTML = `
-    <div class="checkout-grid">
-      <section class="order-summary">
-        <h3>Order Summary</h3>
-        <div class="summary-details">
-          <p>Subtotal: <span id="subtotal">$0.00</span></p>
-          <p>Tax (6%): <span id="tax">$0.00</span></p>
-          <p>Shipping: <span id="shipping">$0.00</span></p>
-          <p class="total"><strong>Total: <span id="order-total">$0.00</span></strong></p>
-        </div>
-      </section>
 
-      <form id="checkout-form">
-        <fieldset>
-          <legend>Customer Information</legend>
-          <label for="fname">First Name:</label>
-          <input type="text" id="fname" name="fname" required>
-          <label for="lname">Last Name:</label>
-          <input type="text" id="lname" name="lname" required>
-          <label for="street">Street Address:</label>
-          <input type="text" id="street" name="street" required>
-          <label for="city">City:</label>
-          <input type="text" id="city" name="city" required>
-          <label for="state">State:</label>
-          <input type="text" id="state" name="state" required>
-          <label for="zip">Zip Code:</label>
-          <input type="text" id="zip" name="zip" required>
-        </fieldset>
-
-        <fieldset>
-          <legend>Payment Information</legend>
-          <label for="cardNumber">Credit Card Number:</label>
-          <input type="text" id="cardNumber" name="cardNumber" required>
-          <label for="expiration">Expiration Date (MM/YY):</label>
-          <input type="text" id="expiration" name="expiration" placeholder="MM/YY" required>
-          <label for="code">Security Code:</label>
-          <input type="text" id="code" name="code" required>
-        </fieldset>
-        
-        <button type="submit">Place Order</button>
-      </form>
-    </div>
-  `;
+  // Initialize checkout process
+  const myCheckout = new CheckoutProcess("so-cart", "#order-summary");
+  myCheckout.init();
   
-  const checkout = new CheckoutProcess("so-cart", ".order-summary");
-  checkout.init();
-  checkout.calculateOrderTotal();
-  
+  // Calculate totals when zip code changes
   const zipInput = document.querySelector("#zip");
   if (zipInput) {
     zipInput.addEventListener("blur", () => {
-      checkout.calculateOrderTotal(zipInput.value);
+      myCheckout.calculateOrderTotal(zipInput.value);
     });
+    // Initial calculation
+    myCheckout.calculateOrderTotal(zipInput.value || "00000");
   }
-  
+
+  // Handle form submission
   const form = document.querySelector("#checkout-form");
   if (form) {
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
       
-      // Validate form using built-in HTML validation
+      // Validate form
       const isValid = form.checkValidity();
-      form.reportValidity();
-      
       if (!isValid) {
+        form.reportValidity();
         return;
       }
       
+      // Get form data
       const formData = new FormData(form);
       const formValues = Object.fromEntries(formData.entries());
       
-      const checkoutForOrder = new CheckoutProcess("so-cart", ".order-summary");
-      checkoutForOrder.init();
-      checkoutForOrder.calculateOrderTotal();
-      const order = await checkoutForOrder.checkout(formValues);
+      // Create order object
+      const order = {
+        ...formValues,
+        orderDate: new Date().toISOString(),
+        orderTotal: myCheckout.orderTotal,
+        tax: myCheckout.tax,
+        shipping: myCheckout.shipping,
+        items: myCheckout.list.map(item => ({
+          id: item.Id,
+          name: item.Name,
+          price: item.FinalPrice || item.SuggestedRetailPrice,
+          quantity: 1
+        }))
+      };
       
       try {
         const externalServices = new ExternalServices();
         await externalServices.checkout(order);
         
-        // Success: clear cart and redirect to success page
+        // Success: clear cart and redirect
         localStorage.removeItem("so-cart");
+        alert("Order placed successfully!");
         window.location.href = "/checkout/success.html";
         
       } catch (error) {
@@ -118,8 +98,9 @@ function renderCheckout() {
   }
 }
 
+// Run initialization when DOM is ready
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", renderCheckout);
+  document.addEventListener("DOMContentLoaded", init);
 } else {
-  renderCheckout();
+  init();
 }

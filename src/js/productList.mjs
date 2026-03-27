@@ -2,14 +2,14 @@ import { renderListWithTemplate } from "./utils.mjs";
 
 function productCardTemplate(product) {
   // ✅ Images is an object, not an array
-  const imageUrl = product.Images?.PrimaryMedium || '/images/placeholder.jpg';
-  
+  const imageUrl = product.Images?.PrimaryMedium || "/images/placeholder.jpg";
+
   // Get brand name (API returns only ID, use ID for now)
-  const brandName = product.Brand || 'Unknown';
-  
+  const brandName = product.Brand.Name || product.Brand || "Brand";
+
   // Get product name
-  const productName = product.NameWithoutBrand || product.Name || 'Product';
-  
+  const productName = product.NameWithoutBrand || product.Name || "Product";
+
   // Get product price
   const price = product.SuggestedRetailPrice || 0;
 
@@ -36,21 +36,25 @@ export default class ProductList {
   async init() {
     // Get data from API
     const list = await this.dataSource.getData(this.category);
-    
+
     // 📋 DIAGNOSTIC LOGS
-    console.log('🎯 Category:', this.category);
-    console.log('🎯 Full list:', list);
-    
+    console.log("🎯 Category:", this.category);
+    console.log("🎯 Full list:", list);
+
     if (list && list.length > 0) {
-      console.log('🎯 First product:', list[0]);
-      console.log('🎯 First product properties:', Object.keys(list[0]));
-      console.log('🎯 First product Images:', list[0].Images);
-      console.log('🎯 PrimaryMedium:', list[0].Images?.PrimaryMedium);
+      console.log("🎯 First product:", list[0]);
+      console.log("🎯 First product properties:", Object.keys(list[0]));
+      console.log("🎯 First product Images:", list[0].Images);
+      console.log("🎯 PrimaryMedium:", list[0].Images?.PrimaryMedium);
     } else {
-      console.warn('⚠️ No products received from API');
+      console.warn("⚠️ No products received from API");
     }
-    
+
     this.renderList(list);
+    const countElement = document.querySelector("#product-count");
+    if (countElement && list) {
+      countElement.textContent = `(${list.length} items found)`;
+    }
   }
 
   renderList(list) {
@@ -59,7 +63,7 @@ export default class ProductList {
       this.listElement,
       list,
       "afterbegin",
-      true
+      true,
     );
   }
 }

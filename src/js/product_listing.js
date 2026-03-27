@@ -4,18 +4,18 @@ import { loadHeaderFooter, getParam, updateCartCounter } from "./utils.mjs";
 
 async function init() {
   // Load header and footer dynamically
-  await loadHeaderFooter();
+  await loadHeaderFooter("/partials/header.html", "/partials/footer.html");
 
   // Update cart counter when page loads
   updateCartCounter();
 
   // Get category from URL parameter (default to 'tents')
-  const category = getParam('category') || 'tents';
+  const category = getParam("category") || "tents";
 
   // Update page title
-  const titleElement = document.querySelector('#category-title');
+  const titleElement = document.querySelector("#category-title");
   if (titleElement) {
-    titleElement.textContent = `Top Products: ${category}`;
+    titleElement.innerHTML = `Top Products: ${category} <span id="product-count"></span>`;
   }
 
   // Initialize product list
@@ -26,7 +26,11 @@ async function init() {
     return;
   }
 
-  const productListInstance = new ProductList(category, dataSource, listElement);
+  const productListInstance = new ProductList(
+    category,
+    dataSource,
+    listElement,
+  );
   productListInstance.init();
 }
 

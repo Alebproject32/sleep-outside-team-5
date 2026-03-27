@@ -1,7 +1,7 @@
-import { getLocalStorage, loadHeaderFooter, updateCartCounter } from "./utils.mjs";
+import { getLocalStorage, loadHeaderFooter, updateCartCounter } from "/js/utils.mjs";
 
 async function init() {
-  // Load header and footer dynamically (espera a que termine)
+  // Load header and footer dynamically
   await loadHeaderFooter();
   
   // Update cart counter after header is loaded
@@ -13,13 +13,13 @@ async function init() {
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
+  const productList = document.querySelector(".product-list");
+  
+  if (!productList) return; //security path if element doesn't exist
   
   // Check if cart exists and has items
   if (!cartItems || cartItems.length === 0) {
-    const productList = document.querySelector(".product-list");
-    if (productList) {
-      productList.innerHTML = "<p>Your cart is empty</p>";
-    }
+    productList.innerHTML = "<p>Your cart is empty</p>";
     // Hide cart footer when cart is empty
     const cartFooter = document.querySelector(".cart-footer");
     if (cartFooter) cartFooter.style.display = "none";
@@ -27,38 +27,25 @@ function renderCartContents() {
   }
   
   const htmlItems = cartItems.map((item) => cartItemTemplate(item));
-  const productList = document.querySelector(".product-list");
-  if (productList) {
-    productList.innerHTML = htmlItems.join("");
-  }
+  productList.innerHTML = htmlItems.join("");
   
   // Calculate and display cart total
   updateCartTotal(cartItems);
 }
 
 function cartItemTemplate(item) {
-  // Use PrimaryMedium from Images object
-  const imageUrl = item.Images?.PrimaryMedium || '/images/placeholder.jpg';
-  
-  // Get color name (Colors is an object, not an array)
-  const colorName = item.Colors?.ColorName || '';
-  
-  // Use SuggestedRetailPrice instead of FinalPrice
+  const imageUrl = item.Images?.PrimaryMedium || "/images/placeholder.jpg";
+  const colorName = item.Colors?.ColorName || "";
   const price = item.SuggestedRetailPrice || 0;
 
-  return `<li class="cart-card divider">
-  <a href="#" class="cart-card__image">
-    <img
-      src="${imageUrl}"
-      alt="${item.Name}"
-    />
-  </a>
-  <a href="#">
-    <h2 class="card__name">${item.Name}</h2>
-  </a>
+  return `<li class="cart-card">
+  <div class="cart-card__image">
+    <img src="${imageUrl}" alt="${item.Name}" />
+  </div>
+  <h2 class="card__name">${item.Name}</h2>
   <p class="cart-card__color">${colorName}</p>
   <p class="cart-card__quantity">qty: 1</p>
-  <p class="cart-card__price">$${price}</p>
+  <p class="cart-card__price">$${price.toFixed(2)}</p>
 </li>`;
 }
 

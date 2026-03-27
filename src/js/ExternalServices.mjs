@@ -1,3 +1,5 @@
+const baseURL = "https://wdd330-backend.onrender.com/";
+
 async function convertToJson(res) {
   const jsonResponse = await res.json();
   
@@ -8,8 +10,9 @@ async function convertToJson(res) {
   }
 }
 
-// Hardcoded URL (temporary, until .env works)
-const baseURL = 'https://wdd330-backend.onrender.com/';
+// Hardcoded URL (temporal, until .env works)
+//const baseURL = import.meta.env.VITE_SERVER_URL;
+//console.log("🚀 baseURL (hardcodeada):", baseURL);
 
 export default class ExternalServices {
   constructor() {}
