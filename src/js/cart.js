@@ -1,56 +1,50 @@
-import { getLocalStorage, loadHeaderFooter } from "./utils.mjs";
+import { getLocalStorage, loadHeaderFooter, removeFromCart } from "./utils.mjs";
 
 async function init() {
-
-  // Load header and footer dynamically
   await loadHeaderFooter();
-
-  //Update the cart
   renderCartContents();
 }
 
 function renderCartContents() {
-  const cartItems = getLocalStorage("so-cart");
-
+  const cartItems = getLocalStorage("so-cart") || [];
   const productList = document.querySelector(".product-list");
-  if (!productList) return; //security path if element doesn't exist
-  
-  // Check if cart exists and has items
-  if (!cartItems || cartItems.length === 0) {
-    document.querySelector(".product-list").innerHTML = "<p>Your cart is empty</p>";
+
+  if (!productList) return;
+
+  if (cartItems.length === 0) {
+    productList.innerHTML = "<p>Your cart is empty</p>";
     return;
   }
-  
+
   const htmlItems = cartItems.map((item) => cartItemTemplate(item));
-  document.querySelector(".product-list").innerHTML = htmlItems.join("");
+  productList.innerHTML = htmlItems.join("");
+
+  // Add event listeners to all remove buttons
+  const removeButtons = document.querySelectorAll(".cart-card__remove");
+  removeButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const productId = e.target.dataset.id;
+      removeFromCart(productId);
+      renderCartContents(); // Re-render to show changes
+    });
+  });
 }
 
 function cartItemTemplate(item) {
-  // ✅ Use PrimaryMedium from Images object
   const imageUrl = item.Images?.PrimaryMedium || "/images/placeholder.jpg";
-  
-  // ✅ Get color name (Colors is an object, not an array)
   const colorName = item.Colors?.ColorName || "";
-  
-  // ✅ Use SuggestedRetailPrice instead of FinalPrice
   const price = item.SuggestedRetailPrice || 0;
 
   return `<li class="cart-card divider">
   <a href="#" class="cart-card__image">
-    <img
-      src="${imageUrl}"
-      alt="${item.Name}"
-    />
+    <img src="${imageUrl}" alt="${item.Name}" />
   </a>
   <a href="#">
     <h2 class="card__name">${item.Name}</h2>
   </a>
-  <p class="cart-card__color">${colorName}</p>
-  <p class="cart-card__quantity">qty: 1</p>
-  <p class="cart-card__price">$${price}</p>
+  <p class="cart-card__price">$${price.toFixed(2)}</p>
+  <span class="cart-card__remove" data-id="${item.Id}" title="Remove Item">X</span>
 </li>`;
 }
 
-// Initialize the cart
-//renderCartContents();
 init();

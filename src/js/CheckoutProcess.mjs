@@ -6,18 +6,16 @@ const services = new ExternalServices();
 function formDataToJSON(formElement) {
   const formData = new FormData(formElement),
     convertedJSON = {};
-
   formData.forEach(function (value, key) {
     convertedJSON[key] = value;
   });
-
   return convertedJSON;
 }
 
 function packageItems(items) {
   return items.map((item) => ({
     id: item.Id,
-    price: item.FinalPrice,
+    price: item.FinalPrice || item.SuggestedRetailPrice,
     name: item.Name,
     quantity: 1,
   }));
@@ -43,23 +41,22 @@ export default class CheckoutProcess {
     const subtotalElement = document.querySelector(
       `${this.outputSelector} #subtotal`,
     );
-    this.itemTotal = this.list.reduce((sum, item) => sum + item.FinalPrice, 0);
-    subtotalElement.innerText = `$${this.itemTotal.toFixed(2)}`;
+    this.itemTotal = this.list.reduce(
+      (sum, item) => sum + (item.FinalPrice || item.SuggestedRetailPrice),
+      0,
+    );
+    if (subtotalElement)
+      subtotalElement.innerText = `$${this.itemTotal.toFixed(2)}`;
   }
 
-  // Zip
   calculateOrderTotal() {
-    // Rule: $10 per item + $2
     this.shipping = 10 + (this.list.length - 1) * 2;
-    // Tax
     this.tax = (this.itemTotal * 0.06).toFixed(2);
-
     this.orderTotal = (
       parseFloat(this.itemTotal) +
       parseFloat(this.shipping) +
       parseFloat(this.tax)
     ).toFixed(2);
-
     this.displayOrderTotals();
   }
 
@@ -70,34 +67,27 @@ export default class CheckoutProcess {
       `${this.outputSelector} #orderTotal`,
     );
 
-    shipping.innerText = `$${this.shipping.toFixed(2)}`;
-    tax.innerText = `$${this.tax}`;
-    orderTotal.innerText = `$${this.orderTotal}`;
+    if (shipping) shipping.innerText = `$${this.shipping.toFixed(2)}`;
+    if (tax) tax.innerText = `$${this.tax}`;
+    if (orderTotal) orderTotal.innerText = `$${this.orderTotal}`;
   }
 
   async checkout(form) {
     const json = formDataToJSON(form);
-
     json.orderDate = new Date().toISOString();
     json.orderTotal = this.orderTotal;
     json.tax = this.tax;
     json.shipping = this.shipping;
     json.items = packageItems(this.list);
 
-    console.log("Enviando orden al servidor...", json);
-
     const existingAlerts = document.querySelectorAll(".alert");
     existingAlerts.forEach((alert) => alert.remove());
 
     try {
-      const res = await services.checkout(json);
-      console.log("Respuesta del servidor:", res);
-
+      await services.checkout(json);
       localStorage.removeItem(this.key);
       location.assign("success.html");
     } catch (err) {
-      console.log("Error al procesar el pago:", err);
-
       for (let key in err.message) {
         alertMessage(err.message[key]);
       }

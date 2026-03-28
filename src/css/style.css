@@ -454,3 +454,109 @@ footer {
   cursor: pointer;
   font-weight: bold;
 }
+
+@keyframes cart-shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px) rotate(-10deg);
+  }
+  50% {
+    transform: translateX(5px) rotate(10deg);
+  }
+  75% {
+    transform: translateX(-5px) rotate(-10deg);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.cart-animate {
+  animation: cart-shake 0.2s ease-in-out;
+}
+
+/* --- CART COUNTER ICON --- */
+.cart {
+  position: relative;
+}
+
+.cart-counter {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #b31c1c; /* Rojo intenso */
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 18px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* --- CART PAGE LAYOUT (Fixing overlap) --- */
+.product-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.cart-card {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr; /* Imagen, Info, Precio/Borrar */
+  grid-gap: 10px;
+  align-items: center;
+  position: relative;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-card__image {
+  grid-column: 1;
+}
+
+.cart-card img {
+  width: 100%;
+  max-width: 100px;
+  height: auto;
+}
+
+.card__name {
+  grid-column: 2;
+  font-size: 1.1rem;
+}
+
+.cart-card__price {
+  grid-column: 3;
+  font-weight: bold;
+  text-align: right;
+  margin-right: 30px; /* Espacio para la X */
+}
+
+/* --- AESTHETIC REMOVE BUTTON (X) --- */
+.cart-card__remove {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #fff;
+  background-color: #d9534f; /* Rojo profesional */
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cart-card__remove:hover {
+  background-color: #c9302c;
+  transform: translateY(-50%) scale(1.1);
+}

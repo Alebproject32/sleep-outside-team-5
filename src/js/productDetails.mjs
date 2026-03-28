@@ -13,7 +13,6 @@ export default class ProductDetails {
 
   async init() {
     this.product = await this.dataSource.findProductById(this.productId);
-    console.log("✅ Load Product:", this.product);
     this.renderProductDetails();
 
     document
@@ -27,48 +26,40 @@ export default class ProductDetails {
 
     cart.push(this.product);
     setLocalStorage("so-cart", cart);
-
-    // Update cart counter after adding product
     updateCartCounter();
+
+    // UI Micro-interaction: Shake Animation
+    const cartIcon = document.querySelector(".cart");
+    if (cartIcon) {
+      cartIcon.classList.add("cart-animate");
+      setTimeout(() => {
+        cartIcon.classList.remove("cart-animate");
+      }, 500);
+    }
   }
 
   renderProductDetails() {
-    // ✅ Images is an object, not an array
     const imageUrl =
       this.product.Images?.PrimaryLarge || "/images/placeholder.jpg";
-
-    // Brand (API returns only ID)
-    const brandName = this.product.Brand || "Unknown";
-
-    // Product name
+    const brandName = this.product.Brand?.Name || "Unknown";
     const productName =
       this.product.NameWithoutBrand || this.product.Name || "Product";
-
-    // Price
     const price = this.product.SuggestedRetailPrice || 0;
 
-    // Description (nested inside Colors)
     let description = "No description available";
-    if (this.product.Colors) {
-      description = this.product.Colors.DescriptionHtmlSimple || description;
+    if (this.product.DescriptionHtmlSimple) {
+      description = this.product.DescriptionHtmlSimple;
     }
 
-    // Assign values to DOM elements
-    const brandEl = document.querySelector("#productBrand");
-    const nameEl = document.querySelector("#productName");
+    document.querySelector("#productBrand").innerText = brandName;
+    document.querySelector("#productName").innerText = productName;
     const imgEl = document.querySelector("#productImage");
-    const priceEl = document.querySelector("#productPrice");
-    const descEl = document.querySelector("#productDescription");
-    const btnEl = document.querySelector("#addToCart");
-
-    if (brandEl) brandEl.innerText = brandName;
-    if (nameEl) nameEl.innerText = productName;
     if (imgEl) {
       imgEl.src = imageUrl;
       imgEl.alt = productName;
     }
-    if (priceEl) priceEl.innerText = `$${price}`;
-    if (descEl) descEl.innerHTML = description;
-    if (btnEl) btnEl.dataset.id = this.product.Id;
+    document.querySelector("#productPrice").innerText = `$${price}`;
+    document.querySelector("#productDescription").innerHTML = description;
+    document.querySelector("#addToCart").dataset.id = this.product.Id;
   }
 }
