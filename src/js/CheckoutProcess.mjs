@@ -1,4 +1,4 @@
-import { getLocalStorage } from "./utils.mjs";
+import { getLocalStorage, alertMessage } from "./utils.mjs";
 import ExternalServices from "./ExternalServices.mjs";
 
 const services = new ExternalServices();
@@ -128,15 +128,21 @@ export default class CheckoutProcess {
 
     console.log("Sending order to server...", json);
 
+    const existingAlerts = document.querySelectorAll(".alert");
+    existingAlerts.forEach((alert) => alert.remove());
+
     try {
       const res = await services.checkout(json);
-      console.log("Server response:", res);
-      alert("Order placed successfully!");
-      return res;
+      console.log("Respuesta del servidor:", res);
+
+      localStorage.removeItem(this.key);
+      location.assign("success.html");
     } catch (err) {
-      console.error("Error processing payment:", err);
-      alert("There was an error processing your order. Please check the console.");
-      throw err;
+      console.log("Error al procesar el pago:", err);
+
+      for (let key in err.message) {
+        alertMessage(err.message[key]);
+      }
     }
   }
 }

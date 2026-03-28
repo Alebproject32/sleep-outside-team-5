@@ -20,14 +20,51 @@
           <fieldset>
             <legend>Shipping Address</legend>
             <label
-              >First Name <input type="text" name="fname" required
+              >First Name
+              <input
+                type="text"
+                name="fname"
+                required
+                pattern="[A-Za-z\s]+"
+                title="Please, submit only letters."
             /></label>
-            <label>Last Name <input type="text" name="lname" required /></label>
-            <label>Street <input type="text" name="street" required /></label>
-            <label>City <input type="text" name="city" required /></label>
-            <label>State <input type="text" name="state" required /></label>
             <label
-              >Zip <input type="text" id="zip" name="zip" required
+              >Last Name
+              <input
+                type="text"
+                name="lname"
+                required
+                pattern="[A-Za-z\s]+"
+                title="Please, submit only letters."
+            /></label>
+            <label>Street <input type="text" name="street" required /></label>
+            <label
+              >City
+              <input
+                type="text"
+                name="city"
+                required
+                pattern="[A-Za-z\s]+"
+                title="Please, submit only letters."
+            /></label>
+            <label
+              >State
+              <input
+                type="text"
+                name="state"
+                required
+                pattern="[A-Za-z\s]+"
+                title="Please, submit only letters."
+            /></label>
+            <label
+              >Zip
+              <input
+                type="text"
+                id="zip"
+                name="zip"
+                required
+                pattern="\d{4,10}"
+                title="Zip code must be a number."
             /></label>
           </fieldset>
 
@@ -39,14 +76,22 @@
                 type="text"
                 name="cardNumber"
                 required
-                value="1234123412341234"
+                pattern="\d{16}"
+                title="The card must have 16 digits."
             /></label>
             <label
               >Expiration
               <input type="text" name="expiration" required value="08/26"
             /></label>
             <label
-              >Code <input type="text" name="code" required value="123"
+              >Code
+              <input
+                type="text"
+                id="zip"
+                name="code"
+                required
+                pattern="\d{4,10}"
+                title="Zip code must be a number."
             /></label>
           </fieldset>
 
