@@ -14,9 +14,11 @@ export default class ProductDetails {
   async init() {
     this.product = await this.dataSource.findProductById(this.productId);
     this.renderProductDetails();
-
-    document
-      .getElementById("addToCart")
+    
+    // Update cart counter when page loads (para mostrar items existentes)
+    updateCartCounter();
+    
+    document.getElementById("addToCart")
       .addEventListener("click", this.addToCart.bind(this));
   }
 

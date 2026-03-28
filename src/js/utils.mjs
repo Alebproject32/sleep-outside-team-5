@@ -50,17 +50,41 @@ export function renderListWithTemplate(
 // Update the cart counter displayed on the cart icon
 export function updateCartCounter() {
   const cart = getLocalStorage("so-cart") || [];
-  const totalItems = cart.length;
-
+  const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
   const cartContainer = document.querySelector(".cart");
   if (!cartContainer) return;
 
+  // Animate the SVG inside the cart
+  const cartSvg = cartContainer.querySelector("svg");
+  if (cartSvg) {
+    cartSvg.classList.add("cart-icon-animate");
+    setTimeout(() => {
+      cartSvg.classList.remove("cart-icon-animate");
+    }, 300);
+  }
+
+  // Update or create counter
   let counter = cartContainer.querySelector(".cart-counter");
 
   if (totalItems > 0) {
     if (!counter) {
       counter = document.createElement("span");
       counter.className = "cart-counter";
+      counter.style.cssText = `
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #b31c1c;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 12px;
+        font-weight: bold;
+        min-width: 18px;
+        text-align: center;
+        line-height: 1.2;
+      `;
+
       const cartLink = cartContainer.querySelector("a");
       if (cartLink) {
         cartLink.style.position = "relative";
@@ -73,6 +97,7 @@ export function updateCartCounter() {
   }
 }
 
+// Renders a single template into a parent element
 export function renderWithTemplate(template, parentElement, data, callback) {
   parentElement.innerHTML = template;
   if (callback) {
@@ -80,13 +105,16 @@ export function renderWithTemplate(template, parentElement, data, callback) {
   }
 }
 
+// Loads an HTML template from a file
 export async function loadTemplate(path) {
   const res = await fetch(path);
   if (res.ok) {
-    return await res.text();
+    const template = await res.text();
+    return template;
   }
 }
 
+// Loads and renders the header and footer templates
 export async function loadHeaderFooter() {
   const headerTemplate = await loadTemplate("/partials/header.html");
   const footerTemplate = await loadTemplate("/partials/footer.html");

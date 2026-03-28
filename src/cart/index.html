@@ -8,7 +8,7 @@
     <script src="../js/cart.js" type="module"></script>
   </head>
 
-  <body>
+  <body class="cart-page">
     <!-- Dynamic header (loaded with loadHeaderFooter) -->
     <header class="divider" id="main-header"></header>
 
@@ -18,14 +18,11 @@
         <ul class="product-list">
           <!-- Cart items will be inserted here dynamically -->
         </ul>
-        <div class="cart-footer hide">
-          <p class="cart-total">Total: $0.00</p>
-          <button
-            id="checkoutButton"
-            onclick="window.location.href='../checkout/index.html'"
-          >
-            Checkout
-          </button>
+
+        <!-- Cart totals and checkout button -->
+        <div class="cart-footer">
+          <p class="cart-total">Total: <span id="cart-total">$0.00</span></p>
+          <a href="/checkout/index.html" class="checkout-button">Proceed to Checkout</a>
         </div>
       </section>
     </main>
