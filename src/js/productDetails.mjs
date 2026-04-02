@@ -14,15 +14,17 @@ export default class ProductDetails {
   async init() {
     this.product = await this.dataSource.findProductById(this.productId);
     this.renderProductDetails();
-    
+
     // Update cart counter when page loads (para mostrar items existentes)
     updateCartCounter();
-    
-    document.getElementById("addToCart")
+
+    document
+      .getElementById("addToCart")
       .addEventListener("click", this.addToCart.bind(this));
   }
 
   addToCart() {
+    console.log("Boton pression: Started animation...");
     let cartContents = getLocalStorage("so-cart");
     let cart = Array.isArray(cartContents) ? cartContents : [];
 
@@ -33,10 +35,14 @@ export default class ProductDetails {
     // UI Micro-interaction: Shake Animation
     const cartIcon = document.querySelector(".cart");
     if (cartIcon) {
+      console.log("Finding Icon:", cartIcon);
       cartIcon.classList.add("cart-animate");
       setTimeout(() => {
         cartIcon.classList.remove("cart-animate");
-      }, 500);
+        console.log("Finish animation and removed class");
+      }, 600);
+    } else {
+      console.error("ERROR: We didn`t found class element .cart");
     }
   }
 

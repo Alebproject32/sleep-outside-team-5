@@ -1,22 +1,49 @@
-import { getLocalStorage, loadHeaderFooter, updateCartCounter } from "/js/utils.mjs";
+import {
+  getLocalStorage,
+  setLocalStorage,
+  loadHeaderFooter,
+  updateCartCounter,
+} from "/js/utils.mjs";
 
 async function init() {
   // Load header and footer dynamically
   await loadHeaderFooter();
-  
+
   // Update cart counter after header is loaded
   updateCartCounter();
-  
+
   // Render cart contents
   renderCartContents();
 }
 
+const productList = document.querySelector(".product-list");
+if (productList) {
+  productList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("cart-card__remove")) {
+      const idToRemove = e.target.dataset.id;
+      removeFromCart(idToRemove);
+    }
+  });
+}
+
+function removeFromCart(id) {
+  let cartItems = getLocalStorage("so-cart");
+
+  const index = cartItems.findIndex((item) => item.Id === id);
+
+  if (index !== -1) {
+    cartItems.splice(index, 1);
+    setLocalStorage("so-cart", cartItems);
+    renderCartContents();
+    updateCartCounter();
+  }
+}
+
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
-  const productList = document.querySelector(".product-list");
-  
+
   if (!productList) return; //security path if element doesn't exist
-  
+
   // Check if cart exists and has items
   if (!cartItems || cartItems.length === 0) {
     productList.innerHTML = "<p>Your cart is empty</p>";
@@ -28,7 +55,7 @@ function renderCartContents() {
 
   const htmlItems = cartItems.map((item) => cartItemTemplate(item));
   productList.innerHTML = htmlItems.join("");
-  
+
   // Calculate and display cart total
   updateCartTotal(cartItems);
 }
@@ -39,6 +66,7 @@ function cartItemTemplate(item) {
   const price = item.SuggestedRetailPrice || 0;
 
   return `<li class="cart-card">
+  <span class="cart-card__remove" data-id="${item.Id}" title="Remove Item">X</span>
   <div class="cart-card__image">
     <img src="${imageUrl}" alt="${item.Name}" />
   </div>
@@ -51,8 +79,11 @@ function cartItemTemplate(item) {
 
 function updateCartTotal(cartItems) {
   // Calculate total using SuggestedRetailPrice
-  const total = cartItems.reduce((sum, item) => sum + (item.SuggestedRetailPrice || 0), 0);
-  
+  const total = cartItems.reduce(
+    (sum, item) => sum + (item.SuggestedRetailPrice || 0),
+    0,
+  );
+
   const totalElement = document.querySelector("#cart-total");
   if (totalElement) {
     totalElement.textContent = `$${total.toFixed(2)}`;
